@@ -125,9 +125,10 @@ def actualizarProducto(request):
         producto.proCodigo = codigo
         
         if(archivo):
-            rutaFile = (producto.proFoto.url).split("/")
-            root = "\\"+str(rutaFile[2])+"\\"+str(rutaFile[3])
-            os.remove(os.path.join(settings.MEDIA_ROOT+root))
+            if (producto.proFoto):
+                # rutaFile = producto.proFoto.path #Se recupera la ruta del archivo
+                # os.remove(rutaFile)
+                producto.proFoto.storage.delete(producto.proFoto.name)
             producto.proFoto = archivo
         else:
             producto.proFoto = producto.proFoto
@@ -147,11 +148,14 @@ def eliminarProducto(request, id):
     try:
         producto = Producto.objects.get(id=id)
         
-        rutaFile = (producto.proFoto.url).split("/")
-        root = "\\"+str(rutaFile[2])+"\\"+str(rutaFile[3])
+        rutaFile = (producto.proFoto.url).split("/") #Recuperamos la URL de la foto y se divide
+        ruta = "\\"+str(rutaFile[2])+"\\"+str(rutaFile[3]) #Se construye una ruta de archivo
         
-        os.remove(os.path.join(settings.MEDIA_ROOT+root))
+        os.remove(os.path.join(settings.MEDIA_ROOT+ruta))
+        #Módulo os para eliminar un archivo ubicado en la ruta especificada, que se construye uniendo la configuración MEDIA_ROOT del módulo settings de Django con la variable "ruta"
         
+        # producto.proFoto.storage.delete(producto.proFoto.name)
+
         producto.delete()
         mensaje = f"Producto eliminado"
         estado = True
