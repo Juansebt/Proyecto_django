@@ -160,7 +160,7 @@ def eliminarProducto(request, id):
         mensaje = f"Producto eliminado"
         estado = True
     except Error as error:
-        mensaje = f"Problemas al eliminar el producto"
+        mensaje = f"Problemas al eliminar el producto {error}"
         
     retorno = {"mensaje":mensaje,"estado":estado}
     return redirect("/listarProductos/",retorno)
